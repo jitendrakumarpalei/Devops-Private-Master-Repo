@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Google Health Checkup') {
+            steps {
+                sh 'curl https://google.com'
+            }
+            post {
+                failure {
+                    mail to: 'ashanta.palei@gmail.com',
+                        from: 'techcare.devops@gmail.com',
+                        subject: "${env.BUILD_NUMBER} - Failed",
+                        body: "Hey There, Build#${env.BUILD_NUMBER} and Stage Name ${STAGE_NAME} failed"
+                }
+            }
+        }
+        stage('Web-app Health Checkup') {
+            steps {
+                sh 'curl http://192.168.1.102'
+            }
+            post {
+                failure {
+                    mail to: 'ashanta.palei@gmail.com',
+                        from: 'techcare.devops@gmail.com',
+                        subject: "${env.BUILD_NUMBER} - Failed",
+                        body: "Hey There, Build#${env.BUILD_NUMBER} and Stage Name ${STAGE_NAME} failed"
+                }
+            }
+        }
+    }
+}
