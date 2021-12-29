@@ -1,0 +1,37 @@
+pipeline {
+    agent { label 'Docker_Host' }
+    environment {
+        HOST_NAME = '192.168.1.1024'
+    }
+
+    stages {
+        stage('WebApp_Health Check Up') {
+            steps {
+                sh 'curl http://$HOST_NAME'
+            }
+            post {
+                failure {
+                    mail to: 'ashanta.palei@gmail.com',
+                        from: 'techcare.devops@gmail.com',
+                        subject: "${env.BUILD_NUMBER} - Status",
+                        body: "Job Failed - \"${env.JOB_NAME}\" build: ${env.BUILD_NUMBER}\n\nView the log at:\n ${env.BUILD_URL}\n\nBlue Ocean:\n${env.RUN_DISPLAY_URL}\n\nStage Name:\n ${env.STAGE_NAME}\n\nJob URL:\n ${env.JOB_URL}\n\n Host name:\n ${HOST_NAME}"
+                    
+
+                }
+            }
+        }
+        stage('Web-app Health Checkup') {
+            steps {
+                sh 'ping -c 10 $HOST_NAME'
+            }
+            post {
+                failure {
+                    mail to: 'ashanta.palei@gmail.com',
+                        from: 'techcare.devops@gmail.com',
+                        subject: "${env.BUILD_NUMBER} - Failed",
+                        body: "Hey There, Build#${env.BUILD_NUMBER} and Stage Name ${STAGE_NAME} failed"
+                }
+            }
+        }
+    }
+}
