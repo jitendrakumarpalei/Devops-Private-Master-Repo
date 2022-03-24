@@ -1,1 +1,5 @@
 kubectl taint nodes node-name key=value:taint-effect  #To taint a node for a specific key value.
+kubectl describe node kubemaster | grep Taint #TO check the taint policy applied to master-node
+kubectl taint node node01 spray=mortein:NoSchedule  #To apply taint in a node
+kubectl run mosquito --image=nginx --restart=Never  #To run a pod with a name of a mosquito
+kubectl run bee --image=nginx --restart=Nver --dry-run -0 yaml >
