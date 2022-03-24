@@ -1,0 +1,1 @@
+kubectl taint nodes node-name key=value:taint-effect  #To taint a node for a specific key value.
