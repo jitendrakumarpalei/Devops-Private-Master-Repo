@@ -1,0 +1,1 @@
+kubectl label nodes node-1 size=Large #To label a node with size Large
