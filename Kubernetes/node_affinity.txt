@@ -1,0 +1,5 @@
+kubectl get nodes node01 --show-labels  #This command will show the list of labels available.
+kubectl label nodes node01 color=blue #To set a node a label with blue.
+kubectl create deployment blue --image=nginx  #THis command will create a deployment with the name of blue
+kubeclt scale deployment blue --replicas=6  #This command will  scale the deployment with 6 replicas
+kubectl get pods -o wide  #This command will list the pods which are deployed in nodes and master
