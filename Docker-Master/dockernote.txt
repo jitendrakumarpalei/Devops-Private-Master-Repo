@@ -1,0 +1,77 @@
+DOCKER-(Images & Containers):
+==============================================================================================================================================
+
+docker --version    :
+docker ps   :
+docker ps -a    :
+docker Images   :
+docker pull <ubuntu:latest>     :
+docker run -it -d  ubuntu   :   This command will run the ubuntu container in background mode
+docker run -it -d --name mycontainer ubuntu     :   This command will run the container with the name of "mycontainer" --name.
+docker run -it -d --name mycontainer -p 8080:80 ubuntu      : This will run the container with the name of "mycontainer" with node <port id="8080">
+docker exec -ti "container name" bash   :   This command will login you to the container.
+docker stop "container id"          : This command will stop the running container
+docker start "container id"     :   This command will start the stopped container
+docker kill "container id"      :This command will kill the running container
+docker restart "container id"       : This command will restart the container
+docker rm -f "container id"     : This command will forcefully remove your container
+docker commit "container id" <custom-image>         :This command will create a new image with name of </custom-image>
+docker tag custom-image apalei/nginx-ubuntu-image   :This command will create a new image from "custom-image"
+docker login:       This command will login to your hub.docker.com
+docker push apalei/nginx-ubuntu-image       :This command will push your image to docker hub.
+docker rmi "imagename"      :This command will remove the docker image.\
+docker build -t ubuntu-nginx-image .    : This command will build a new image with name of ubuntu-nginx-image
+
+
+
+=================================================================================================================================================
+DOCKER-FILE
+=================================================================================================================================================
+FROM
+ADD
+COPY
+RUN
+WORKDIR
+CMD
+VOLUME
+EXPOSE
+ENTRYPOINT
+LABEL
+
+Best Practices:
+    -- Create ephemeral Containers
+    -- pipe Dockerfile through stdin
+    -- exclude with .dockerignore
+    -- use multi-stage builds
+    -- Don't install unncessary packages
+    -- Decouple applications
+    -- minimize the number of layers
+
+
+---------------------
+docker build -t custom-python-image . (. means current directory)       : This command will crate a new image withh the name of custom-python-image
+
+
+
+==================================================================================================================================================
+DOCKE VOLUME/STORAGE
+==================================================================================================================================================
+docker volume create <Volumename>       : This command will create a volume
+docker volume ls        : This command will list the number volume in docker machine
+docker volume inspect "volumename"      : This command will describe about  the volume
+docker volume rm "volumename"       : This command will remove the mention volume
+docker volume prune     : This command will remove all the local volumes
+docker run -it -d --name CoaAN --mount source=batman, target=/apps ubuntu       : This command will create a container with name of CoAN with a mounted volume (Mount FLag)
+docker container inspect "containername"    :   This command will describe about the container
+docker docker run -it -d --name ConB --volume flash:/apps ubuntu        : This command will create a container with the name of CoanB witha mounted voume (Volume Tag)
+docker run -it -d --name CoanC --mount source=batman, target=/apps,readonly ubuntu      : This command will create a container with the name of CoanC with the mounted readonly volume.
+
+===================================================================================================================================================
+BIND Mount (Bind mount aren't managed by DOcker and are mapped to a host system directory)
+===================================================================================================================================================
+docker run -it -d --name my-image --mount type=bind,source=$(pwd)/fun,target=/apps ubuntu   : This command will create a container with  a bind mount pint to /fun directory
+
+
+===================================================================================================================================================
+DOCKER STORAGE DRIVERS
+===================================================================================================================================================
