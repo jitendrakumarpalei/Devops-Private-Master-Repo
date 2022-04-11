@@ -1,0 +1,35 @@
+pipeline {
+    agent { label 'linux' }
+
+    environment {
+        DOCKERHUB_CREDENTIALS=credentials('DOCKER-HUB')
+    }
+
+    stages {
+        stage('Git-Checkout') {
+            steps {
+                git 'https://github.com/shazforiot/nodeapp_test.git'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'docker build -t ashantap/nodeapp_test123:latest .'
+            }
+        }
+        stage('Docker Login') {
+            steps {
+                sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin"
+            }
+        }
+        stage('Image Push') {
+            steps {
+                sh 'docker push ashantap/nodeapp_test123:latest'
+            }
+        }
+    }
+    post {
+        always {
+            sh 'docker logout'
+        }
+    }
+}
