@@ -1,0 +1,53 @@
+pipeline {
+    agent { label 'linux' }
+
+    tools {
+        // Install the Maven version configured as "M3" and add it to the path.
+        maven "MAVEN_HOME"
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                // Get some code from a GitHub repository
+                git 'https://github.com/ravdy/javaloginapp.git'
+
+                // Run Maven on a Unix agent.
+                sh "mvn clean package"
+
+                // To run Maven on a Windows agent, use
+                // bat "mvn -Dmaven.test.failure.ignore=true clean package"
+            }
+
+            post {
+                // If Maven was able to run the tests, even if some of the test
+                // failed, record the test results and archive the jar file.
+                success {
+                    archiveArtifacts 'target/*.war'
+                }
+            }
+        }
+        stage('Code Analysis') {
+            steps {
+                // Scanning the build using sonarqube
+                withSonarQubeEnv('sonarqube-8.9.2') {
+                    
+                  //  sh "${scannerHome}/bin/sonar-scanner"
+                    sh "mvn sonar:sonar"
+                }
+            }
+        }
+        stage('Deployment') {
+            steps {
+                // Deploying the build to artifactory after a successfull scan.
+                echo " Deployment Completed"
+            }
+        }
+        stage('Code-Scan') {
+            steps {
+                // Pilot Mode
+                echo "Pilot mode completed"
+            }
+        }
+    }
+}
