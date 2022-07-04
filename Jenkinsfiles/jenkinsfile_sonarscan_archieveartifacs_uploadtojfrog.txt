@@ -1,0 +1,69 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/kliakos/sparkjava-war-example.git'
+            }
+        }
+        stage('Quality Gate status') {
+            steps {
+                script {
+            withSonarQubeEnv('sonarqube') {
+            sh 'mvn sonar:sonar'
+                          }
+            timeout(time: 1, unit: 'HOURS') {
+            def qg = waitForQualityGate()
+                if (qg.status != 'OK') {
+                    error "pipeline aborted due to quality gate failure: ${qg.status}"
+                }
+                    }
+              sh "mvn clean install"
+                }
+            }
+        }
+        stage('Archieving artifacts') {
+            steps {
+                archiveArtifacts artifacts: '**/*.war'
+            }
+        }
+        stage('Server') {
+            steps {
+                rtServer (
+                    id: "jfrog",
+                    url: 'http://localhost:8082/artifactory',
+                    username: 'admin',
+                     password: 'Mahavir@141',
+                     bypassProxy: true,
+                     timeout: 300
+                         )
+            }
+        }
+        stage('upload') {
+            steps {
+                rtUpload (
+                    serverId: "jfrog",
+                    spec: '''{
+                        "files": [
+                            {
+                            "pattern": "*.war",
+                            "target": "logic-ops-lab-libs-snapshot-local"
+                            }
+
+                                  ]
+                                }''',
+
+                              )
+                }              
+            }
+            stage("PUblishh build info") {
+                steps {
+                    rtPublishBuildInfo (
+                        serverId: "jfrog"
+                    )
+                }
+            }
+        }
+    }
+}
