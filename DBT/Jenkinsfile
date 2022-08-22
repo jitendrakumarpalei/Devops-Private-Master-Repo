@@ -1,0 +1,42 @@
+pipeline {
+    agent { label 'database' }
+
+    stages {
+        stage('Pre-Check') {
+            steps {
+                sh '''
+                    python3 --version
+                    git --version
+                    free -m
+                    free -g
+                '''
+            }
+        }
+        stage('CleanWS') {
+            steps {
+                cleanWs()
+            }
+        }
+        stage('Github Checkout') {
+            steps {
+                git 'https://github.com/AshantaP/Test.git'
+            }
+        }
+        stage('DBT-Prequisites') {
+            environment {
+                SCANNER_HOME = tool 'sonar-lin'
+                PROJECT_NAME = 'sql'
+            }
+            steps {
+                withSonarQubeEnv('SonarCloudOne') {
+                    sh '''$SCANNER_HOME/bin/sonar-scanner \
+                    -Dsonar.java.binaries=build/classes/java/ \
+                    -Dsonar.projectKey=$PROJECT_NAME \
+                    -Dsonar.sources=.'''
+                }
+            }
+            
+        }
+
+    }
+}
