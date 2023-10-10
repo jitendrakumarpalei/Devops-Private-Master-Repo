@@ -34,7 +34,7 @@ pipeline {
                     id: "jfrog",
                     url: 'http://localhost:8082/artifactory',
                     username: 'admin',
-                     password: 'Mahavir@141',
+                     password: 'passward',
                      bypassProxy: true,
                      timeout: 300
                          )
